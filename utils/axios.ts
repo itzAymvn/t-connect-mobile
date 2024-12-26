@@ -5,7 +5,7 @@ import axios from "axios"
  * Custom axios instance with base configuration and auth token interceptor
  */
 export const axiosInstance = axios.create({
-	baseURL: "http://t-connect/api",
+	baseURL: `${process.env.EXPO_PUBLIC_BASE_URL}/api`,
 	headers: {
 		"Content-Type": "application/json",
 	},
@@ -26,3 +26,16 @@ axiosInstance.interceptors.request.use(async (request) => {
 
 	return request
 })
+
+/**
+ * Response interceptor that preserves original error messages
+ */
+axiosInstance.interceptors.response.use(
+	(response) => response,
+	(error) => {
+		if (error.response?.data?.message) {
+			error.message = error.response.data.message
+		}
+		return Promise.reject(error)
+	}
+)

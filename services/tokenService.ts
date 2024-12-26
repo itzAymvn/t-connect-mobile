@@ -1,5 +1,7 @@
 import * as SecureStore from "expo-secure-store"
 
+let token: string | null = null
+
 /**
  * Service for managing authentication tokens securely using expo-secure-store
  */
@@ -9,7 +11,11 @@ import * as SecureStore from "expo-secure-store"
  * @returns Promise<string | null> The stored token or null if not found
  */
 export const getToken = async () => {
-	const token = await SecureStore.getItemAsync("token")
+	if (token !== null) {
+		return token
+	}
+
+	token = await SecureStore.getItemAsync("token")
 	return token
 }
 
@@ -18,8 +24,14 @@ export const getToken = async () => {
  * @param token - The token string to store
  * @returns Promise<void>
  */
-export const setToken = async (token: string) => {
-	await SecureStore.setItemAsync("token", token)
+export const setToken = async (newToken: string) => {
+	token = newToken
+
+	if (token !== null) {
+		await SecureStore.setItemAsync("token", token)
+	} else {
+		await SecureStore.deleteItemAsync("token")
+	}
 }
 
 /**
@@ -27,5 +39,6 @@ export const setToken = async (token: string) => {
  * @returns Promise<void>
  */
 export const removeToken = async () => {
+	token = null
 	await SecureStore.deleteItemAsync("token")
 }
