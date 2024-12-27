@@ -17,7 +17,7 @@ export default function DashboardLayout() {
 		<Drawer
 			screenOptions={{
 				headerShown: true,
-				drawerType: "front",
+				drawerType: "slide",
 				drawerStyle: {
 					backgroundColor: isDarkColorScheme
 						? COLORS.black

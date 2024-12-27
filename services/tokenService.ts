@@ -39,6 +39,9 @@ export const setToken = async (newToken: string) => {
  * @returns Promise<void>
  */
 export const removeToken = async () => {
+	if (token !== null) {
+		await SecureStore.deleteItemAsync("token")
+	}
+
 	token = null
-	await SecureStore.deleteItemAsync("token")
 }
