@@ -15,7 +15,8 @@
 			"adaptiveIcon": {
 				"foregroundImage": "./assets/images/adaptive-icon.png",
 				"backgroundColor": "#ffffff"
-			}
+			},
+			"package": "com.mjtech.tconnect"
 		},
 		"web": {
 			"bundler": "metro",
@@ -37,6 +38,14 @@
 		],
 		"experiments": {
 			"typedRoutes": true
+		},
+		"extra": {
+			"router": {
+				"origin": false
+			},
+			"eas": {
+				"projectId": "f833e69b-10aa-43ec-ad1a-ce98a62ecc33"
+			}
 		}
 	}
 }
