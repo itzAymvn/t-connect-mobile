@@ -1,29 +1,37 @@
-import { View } from "react-native"
-import { Stack } from "expo-router"
-import { Icon } from "@roninoss/icons"
-import { ThemeToggle } from "@/components/nativewindui/ThemeToggle"
+import { CustomDrawerContent } from "@/components/CustomDrawerContent"
 import { Text } from "@/components/nativewindui/Text"
-import { useContext } from "react"
+import { ThemeToggle } from "@/components/nativewindui/ThemeToggle"
 import { AuthContext } from "@/contexts/authContext"
 import { useColorScheme } from "@/lib/useColorScheme"
 import { COLORS } from "@/theme/colors"
+import { Icon } from "@roninoss/icons"
+import { Drawer } from "expo-router/drawer"
+import { useContext } from "react"
+import { View } from "react-native"
 
-export default function AuthLayout() {
+export default function DashboardLayout() {
 	const { user } = useContext(AuthContext)
-	const { colorScheme, isDarkColorScheme } = useColorScheme()
+	const { isDarkColorScheme } = useColorScheme()
 
 	return (
-		<Stack
+		<Drawer
 			screenOptions={{
 				headerShown: true,
+				drawerType: "front",
+				drawerStyle: {
+					backgroundColor: isDarkColorScheme
+						? COLORS.black
+						: COLORS.white,
+				},
 			}}
+			drawerContent={CustomDrawerContent}
 		>
-			<Stack.Screen
+			<Drawer.Screen
 				name="dashboard"
 				options={{
-					title: "Dashboard",
+					title: "Tableau de bord",
 					headerRight: () => (
-						<View className="flex-row items-center gap-2">
+						<View className="flex-row items-center gap-2 pr-4">
 							<Icon
 								namingScheme="sfSymbol"
 								name="bell"
@@ -43,8 +51,17 @@ export default function AuthLayout() {
 							</View>
 						</View>
 					),
+					drawerLabel: "Tableau de bord",
+					drawerIcon: ({ size, color }) => (
+						<Icon
+							namingScheme="sfSymbol"
+							name="house"
+							size={size}
+							color={color}
+						/>
+					),
 				}}
 			/>
-		</Stack>
+		</Drawer>
 	)
 }

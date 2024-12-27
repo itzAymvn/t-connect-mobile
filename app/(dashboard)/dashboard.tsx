@@ -1,26 +1,16 @@
-import { ActivityIndicator } from "@/components/nativewindui/ActivityIndicator"
 import { Button } from "@/components/nativewindui/Button"
 import { Text } from "@/components/nativewindui/Text"
-import { ThemeToggle } from "@/components/nativewindui/ThemeToggle"
 import { AuthContext } from "@/contexts/authContext"
-import { logout as logoutService } from "@/services/authService"
-import { Redirect, router } from "expo-router"
+import { Redirect } from "expo-router"
 import React, { useContext, useState } from "react"
-import { RefreshControl, ScrollView, View } from "react-native"
-import { Icon } from "@roninoss/icons"
+import { ScrollView, View } from "react-native"
 
 export default function Dashboard() {
-	const { user, setUser } = useContext(AuthContext)
-	const [isRefreshing, setIsRefreshing] = useState(false)
+	const { user } = useContext(AuthContext)
+	const [, setIsRefreshing] = useState(false)
 
 	if (!user) {
 		return <Redirect href="/" />
-	}
-
-	const logout = async () => {
-		await logoutService()
-		setUser(null)
-		router.replace("/")
 	}
 
 	const onRefresh = async () => {
@@ -118,31 +108,6 @@ export default function Dashboard() {
 				</View>
 
 				{/* Footer */}
-				<View className="p-6 border-t border-border">
-					<View className="gap-4">
-						<Button
-							size="lg"
-							className="w-full h-14 rounded-xl shadow-sm bg-red-500"
-							onPress={logout}
-						>
-							<Text className="font-semibold text-white">
-								Se déconnecter
-							</Text>
-						</Button>
-
-						<Text
-							variant="footnote"
-							color="tertiary"
-							className="text-center"
-						>
-							© 2024{" "}
-							<Text variant="footnote" className="underline">
-								MJTech
-							</Text>
-							. Tous droits réservés.
-						</Text>
-					</View>
-				</View>
 			</View>
 		</ScrollView>
 	)

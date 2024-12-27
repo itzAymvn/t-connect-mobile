@@ -26,7 +26,7 @@ export default function RootLayout() {
 	useEffect(() => {
 		loadUser()
 			.then(setUser)
-			.catch(console.error)
+			.catch(() => {})
 			.finally(() => setIsLoading(false))
 
 		SplashScreen.hideAsync()
