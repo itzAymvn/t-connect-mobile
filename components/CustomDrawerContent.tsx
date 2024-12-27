@@ -4,6 +4,7 @@ import { logout } from "@/services/authService"
 import {
 	DrawerContentComponentProps,
 	DrawerContentScrollView,
+	DrawerItem,
 	DrawerItemList,
 } from "@react-navigation/drawer"
 import { useContext } from "react"
@@ -11,6 +12,7 @@ import { Image, Pressable, View } from "react-native"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
 import { Picker, PickerItem } from "./nativewindui/Picker"
 import { Text } from "./nativewindui/Text"
+import { Icon } from "@roninoss/icons"
 import { Child } from "@/types"
 
 const DrawerHeader = ({ handleLogout }: { handleLogout: () => void }) => {
@@ -28,20 +30,23 @@ const DrawerHeader = ({ handleLogout }: { handleLogout: () => void }) => {
 					<View>
 						<Text
 							variant="title2"
-							className="font-bold text-foreground"
+							className="font-bold text-gray-900 dark:text-white"
 						>
 							T-CONNECT
 						</Text>
-						<Text variant="subhead" color="tertiary">
+						<Text
+							variant="subhead"
+							className="text-gray-500 dark:text-gray-400"
+						>
 							Portail parent
 						</Text>
 					</View>
 				</View>
 				<Pressable
 					onPress={handleLogout}
-					className="w-10 h-10 rounded-full bg-red-500/10 items-center justify-center"
+					className="w-10 h-10 rounded-full bg-red-500/10 dark:bg-red-500/20 items-center justify-center"
 				>
-					<Text className="text-red-500">×</Text>
+					<Text className="text-red-500 dark:text-red-400">×</Text>
 				</Pressable>
 			</View>
 		</View>
@@ -59,50 +64,52 @@ const DrawerFooter = ({
 	const { bottom } = useSafeAreaInsets()
 	return (
 		<View
-			className="p-6 border-t border-border"
+			className="p-6 border-t border-gray-200 dark:border-gray-700"
 			style={{ paddingBottom: Math.max(bottom, 16) }}
 		>
-			<View className="gap-4">
-				{/* Child Selection */}
-				{user?.children && user.children.length > 0 && (
-					<View className="flex-row items-center gap-2">
-						<Text variant="footnote" color="tertiary">
-							Enfant :
-						</Text>
-						<View className="flex-1">
-							<Picker
-								selectedValue={selectedChild?.id}
-								onValueChange={(childId) => {
-									const child = user.children.find(
-										(c) => c.id === childId
-									)
-									if (child) setSelectedChild(child)
-								}}
-								className="text-foreground bg-gray-100 dark:bg-gray-700"
-							>
-								{user.children.map((child) => (
-									<PickerItem
-										key={child.id}
-										label={child.prenom}
-										value={child.id}
-									/>
-								))}
-							</Picker>
-						</View>
-					</View>
-				)}
+			{/* Child Selection */}
+			{user?.children && user.children.length > 0 && (
+				<View className="mb-6">
+					<Text
+						variant="subhead"
+						className="mb-2 text-gray-500 dark:text-gray-400"
+					>
+						Sélectionner un enfant
+					</Text>
+					<Picker
+						selectedValue={selectedChild?.id}
+						onValueChange={(value) => {
+							const child = user.children.find(
+								(c) => c.id === value
+							)
+							setSelectedChild(child || null)
+						}}
+					>
+						{user.children.map((child) => (
+							<PickerItem
+								key={child.id}
+								label={child.prenom}
+								value={child.id}
+							/>
+						))}
+					</Picker>
+				</View>
+			)}
+
+			<Text
+				variant="footnote"
+				color="tertiary"
+				className="text-center text-gray-500 dark:text-gray-400"
+			>
+				© 2024{" "}
 				<Text
 					variant="footnote"
-					color="tertiary"
-					className="text-center"
+					className="underline text-gray-500 dark:text-gray-400"
 				>
-					© 2024{" "}
-					<Text variant="footnote" className="underline">
-						MJTech
-					</Text>
-					. Tous droits réservés.
+					MJTech
 				</Text>
-			</View>
+				. Tous droits réservés.
+			</Text>
 		</View>
 	)
 }
@@ -117,7 +124,7 @@ export const CustomDrawerContent = (props: DrawerContentComponentProps) => {
 	}
 
 	return (
-		<View className="flex-1">
+		<View className="flex-1 bg-gray-50 dark:bg-gray-900">
 			<DrawerHeader handleLogout={handleLogout} />
 
 			<DrawerContentScrollView {...props}>

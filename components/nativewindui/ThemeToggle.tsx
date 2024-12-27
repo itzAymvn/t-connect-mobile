@@ -1,6 +1,5 @@
 import { Icon } from "@roninoss/icons"
 import { Pressable, View } from "react-native"
-import Animated, { ZoomInRotate } from "react-native-reanimated"
 
 import { cn } from "@/lib/cn"
 import { useColorScheme } from "@/lib/useColorScheme"
@@ -21,11 +20,7 @@ export function ThemeToggle() {
 
 	return (
 		<View>
-			<Animated.View
-				className="items-center justify-center"
-				key={"toggle-" + colorScheme}
-				entering={ZoomInRotate}
-			>
+			<View className="items-center justify-center">
 				<Pressable
 					onPress={() => {
 						setColorScheme(
@@ -36,7 +31,7 @@ export function ThemeToggle() {
 				>
 					{renderIcon}
 				</Pressable>
-			</Animated.View>
+			</View>
 		</View>
 	)
 }

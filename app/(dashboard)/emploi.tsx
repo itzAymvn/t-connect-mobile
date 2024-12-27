@@ -1,25 +1,26 @@
 import { useSelectedChild } from "@/contexts/childContext"
+import { EmploiResponse, getEmploi, Seance } from "@/services/childService"
+import { useFocusEffect } from "@react-navigation/native"
+import { useCallback, useState } from "react"
 import {
-	Text,
-	View,
-	ScrollView,
 	ActivityIndicator,
 	Pressable,
+	ScrollView,
+	Text,
+	View,
+	RefreshControl,
 } from "react-native"
-import { getEmploi } from "@/services/childService"
-import { useEffect, useState } from "react"
-import { EmploiResponse, Seance } from "@/services/childService"
 
 function CourseCard({ seance }: { seance: Seance }) {
 	return (
 		<View className="bg-white dark:bg-gray-800 rounded-lg p-4 mb-3 border border-gray-200 dark:border-gray-700">
-			<View className="flex-row justify-between items-center mb-2">
-				<Text className="font-bold text-lg text-gray-900 dark:text-white">
+			<View className="flex-row justify-between items-start mb-2">
+				<Text className="font-bold text-lg text-gray-900 dark:text-white flex-1 mr-3">
 					{seance.typetranchehoraire === "COURS"
 						? seance.unite_libelle
 						: seance.typetranchehoraire}
 				</Text>
-				<View className="bg-gray-100 dark:bg-gray-700 px-3 py-1 rounded-full">
+				<View className="bg-gray-100 dark:bg-gray-700 px-3 py-1 rounded-full shrink-0">
 					<Text className="text-sm text-gray-600 dark:text-gray-300">
 						{seance.heuredebut} - {seance.heurefin}
 					</Text>
@@ -90,33 +91,38 @@ export default function Emploi() {
 	const [isLoading, setIsLoading] = useState(false)
 	const [error, setError] = useState<string | null>(null)
 	const [selectedDay, setSelectedDay] = useState<string>("")
+	const [refreshing, setRefreshing] = useState(false)
 
-	useEffect(() => {
-		async function fetchEmploi() {
-			if (!selectedChild?.inscriptions[0]?.id) return
+	const fetchEmploi = useCallback(async () => {
+		if (!selectedChild?.inscriptions[0]?.id) return
 
-			setIsLoading(true)
-			setError(null)
+		setError(null)
 
-			try {
-				const data = await getEmploi(selectedChild.inscriptions[0].id)
-				setEmploi(data)
-				if (data.emploi && Object.keys(data.emploi).length > 0) {
-					setSelectedDay(Object.keys(data.emploi)[0])
-				}
-			} catch (err) {
-				setError(
-					err instanceof Error
-						? err.message
-						: "Une erreur est survenue"
-				)
-			} finally {
-				setIsLoading(false)
+		try {
+			const data = await getEmploi(selectedChild.inscriptions[0].id)
+			setEmploi(data)
+			if (data.emploi && Object.keys(data.emploi).length > 0) {
+				setSelectedDay(Object.keys(data.emploi)[0])
 			}
+		} catch (err) {
+			setError(
+				err instanceof Error ? err.message : "Une erreur est survenue"
+			)
 		}
-
-		fetchEmploi()
 	}, [selectedChild])
+
+	const onRefresh = useCallback(async () => {
+		setRefreshing(true)
+		await fetchEmploi()
+		setRefreshing(false)
+	}, [fetchEmploi])
+
+	useFocusEffect(
+		useCallback(() => {
+			setIsLoading(true)
+			fetchEmploi().finally(() => setIsLoading(false))
+		}, [fetchEmploi])
+	)
 
 	if (isLoading) {
 		return (
@@ -170,14 +176,33 @@ export default function Emploi() {
 				/>
 			</View>
 
-			<ScrollView className="flex-1 px-4">
+			<ScrollView
+				className="flex-1 px-4"
+				refreshControl={
+					<RefreshControl
+						refreshing={refreshing}
+						onRefresh={onRefresh}
+						tintColor="#111827"
+						colors={["#111827"]}
+					/>
+				}
+			>
 				{selectedDay &&
-					emploi.emploi[selectedDay].map((seance) => (
-						<CourseCard
-							key={`${seance.heuredebut}-${seance.heurefin}`}
-							seance={seance}
-						/>
-					))}
+					emploi.emploi[selectedDay]
+						.filter((seance, index, array) => {
+							if (index === array.length - 1) {
+								return !["pause", "dejeuner"].includes(
+									seance.typetranchehoraire.toLowerCase()
+								)
+							}
+							return true
+						})
+						.map((seance) => (
+							<CourseCard
+								key={`${seance.heuredebut}-${seance.heurefin}`}
+								seance={seance}
+							/>
+						))}
 			</ScrollView>
 		</View>
 	)

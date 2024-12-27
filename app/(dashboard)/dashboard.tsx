@@ -1,6 +1,7 @@
 import { Button } from "@/components/nativewindui/Button"
 import { Text } from "@/components/nativewindui/Text"
 import { AuthContext } from "@/contexts/authContext"
+import { useSelectedChild } from "@/contexts/childContext"
 import { Redirect } from "expo-router"
 import React, { useContext, useState } from "react"
 import { ScrollView, View } from "react-native"
@@ -8,6 +9,7 @@ import { ScrollView, View } from "react-native"
 export default function Dashboard() {
 	const { user } = useContext(AuthContext)
 	const [, setIsRefreshing] = useState(false)
+	const { selectedChild } = useSelectedChild()
 
 	if (!user) {
 		return <Redirect href="/" />
@@ -54,7 +56,11 @@ export default function Dashboard() {
 								{user.children.map((child) => (
 									<View
 										key={child.id}
-										className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700 flex-row items-center gap-4"
+										className={`rounded-lg p-4 border border-gray-200 dark:border-gray-700 flex-row items-center gap-4 ${
+											selectedChild?.id === child.id
+												? "bg-blue-50 dark:bg-blue-900/20"
+												: "bg-white dark:bg-gray-800"
+										}`}
 									>
 										<View className="bg-gray-100 dark:bg-gray-700 h-14 w-14 rounded-full items-center justify-center">
 											<Text className="text-gray-900 dark:text-white font-semibold text-lg">
@@ -67,7 +73,10 @@ export default function Dashboard() {
 												{child.prenom} {child.nom}
 											</Text>
 											<Text className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-												Élève
+												Élève{" "}
+												{child.id === selectedChild?.id
+													? "selected"
+													: ""}
 											</Text>
 										</View>
 									</View>
