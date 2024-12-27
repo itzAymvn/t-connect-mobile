@@ -3,7 +3,6 @@ import { Text } from "@/components/nativewindui/Text"
 import { ThemeToggle } from "@/components/nativewindui/ThemeToggle"
 import { AuthContext } from "@/contexts/authContext"
 import { useColorScheme } from "@/lib/useColorScheme"
-import { COLORS } from "@/theme/colors"
 import { Icon } from "@roninoss/icons"
 import { Drawer } from "expo-router/drawer"
 import { useContext } from "react"
@@ -20,27 +19,24 @@ export default function DashboardLayout() {
 				drawerType: "slide",
 				drawerStyle: {
 					backgroundColor: isDarkColorScheme
-						? COLORS.black
-						: COLORS.white,
+						? "rgb(17 24 39)" // bg-gray-900
+						: "rgb(249 250 251)", // bg-gray-50
 				},
 				headerRight: () => (
 					<View className="flex-row items-center gap-2 pr-4">
-						{/* <View className="relative"> */}
 						<Icon
 							namingScheme="sfSymbol"
 							name="bell"
 							size={20}
 							color={
-								isDarkColorScheme ? COLORS.white : COLORS.black
+								isDarkColorScheme
+									? "rgb(255 255 255)"
+									: "rgb(17 24 39)"
 							}
 						/>
-						{/* <View className="absolute -top-1 -right-1 bg-red-500 rounded-full w-4 h-4 items-center justify-center">
-                                <Text className="text-white text-[10px]">2</Text>
-                            </View>
-                        </View> */}
 						<ThemeToggle />
-						<View className="bg-primary/10 h-8 w-8 rounded-full items-center justify-center">
-							<Text className="text-primary text-sm font-medium">
+						<View className="bg-gray-100 dark:bg-gray-700 h-8 w-8 rounded-full items-center justify-center">
+							<Text className="text-gray-900 dark:text-white text-sm font-medium">
 								{user?.user.prenom[0]}
 								{user?.user.nom[0]}
 							</Text>

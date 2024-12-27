@@ -21,24 +21,21 @@ export default function Dashboard() {
 
 	return (
 		<ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-			<View className="flex-1 bg-background">
+			<View className="flex-1 bg-gray-50 dark:bg-gray-900">
 				{/* Header */}
-				<View className="p-6 border-b border-border">
+				<View className="bg-white dark:bg-gray-800 p-4 mb-2 border-b border-gray-200 dark:border-gray-700">
 					<View className="flex-row items-center gap-4">
-						<View className="bg-primary/10 h-16 w-16 rounded-full items-center justify-center">
-							<Text className="text-primary text-xl font-medium">
+						<View className="bg-gray-100 dark:bg-gray-700 h-16 w-16 rounded-full items-center justify-center">
+							<Text className="text-gray-900 dark:text-white text-xl font-medium">
 								{user.user.prenom[0]}
 								{user.user.nom[0]}
 							</Text>
 						</View>
 						<View>
-							<Text
-								variant="title2"
-								className="font-bold text-foreground"
-							>
+							<Text className="text-2xl font-bold text-gray-900 dark:text-white">
 								{user.user.prenom} {user.user.nom}
 							</Text>
-							<Text variant="subhead" color="tertiary">
+							<Text className="text-sm text-gray-500 dark:text-gray-400">
 								Tableau de bord parent
 							</Text>
 						</View>
@@ -46,13 +43,10 @@ export default function Dashboard() {
 				</View>
 
 				{/* Content */}
-				<View className="flex-1 p-6">
+				<View className="flex-1 p-4">
 					{user?.children && user.children.length > 0 ? (
 						<View className="gap-6">
-							<Text
-								variant="title3"
-								className="text-foreground font-semibold"
-							>
+							<Text className="text-xl font-semibold text-gray-900 dark:text-white">
 								Enfants inscrits ({user.children.length})
 							</Text>
 
@@ -60,26 +54,19 @@ export default function Dashboard() {
 								{user.children.map((child) => (
 									<View
 										key={child.id}
-										className="bg-card/50 rounded-2xl p-6 shadow-lg border border-border/50 flex-row items-center gap-4"
+										className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700 flex-row items-center gap-4"
 									>
-										<View className="bg-primary/10 h-14 w-14 rounded-full items-center justify-center">
-											<Text className="text-primary font-semibold text-lg">
+										<View className="bg-gray-100 dark:bg-gray-700 h-14 w-14 rounded-full items-center justify-center">
+											<Text className="text-gray-900 dark:text-white font-semibold text-lg">
 												{child.prenom[0]}
 												{child.nom[0]}
 											</Text>
 										</View>
 										<View>
-											<Text
-												variant="heading"
-												className="font-bold text-foreground"
-											>
+											<Text className="font-bold text-gray-900 dark:text-white">
 												{child.prenom} {child.nom}
 											</Text>
-											<Text
-												variant="subhead"
-												color="tertiary"
-												className="mt-1"
-											>
+											<Text className="text-sm text-gray-500 dark:text-gray-400 mt-1">
 												Élève
 											</Text>
 										</View>
@@ -89,10 +76,7 @@ export default function Dashboard() {
 						</View>
 					) : (
 						<View className="flex-1 justify-center items-center">
-							<Text
-								variant="subhead"
-								className="text-foreground/60 text-center"
-							>
+							<Text className="text-gray-600 dark:text-gray-400 text-center">
 								Aucun enfant n'est actuellement enregistré dans
 								votre compte
 							</Text>
@@ -101,13 +85,13 @@ export default function Dashboard() {
 								variant="secondary"
 								className="mt-4"
 							>
-								<Text className="text-primary">Actualiser</Text>
+								<Text className="text-gray-900 dark:text-white">
+									Actualiser
+								</Text>
 							</Button>
 						</View>
 					)}
 				</View>
-
-				{/* Footer */}
 			</View>
 		</ScrollView>
 	)
