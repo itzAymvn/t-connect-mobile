@@ -45,9 +45,15 @@ export default function RootLayout() {
 
 			<NavThemeProvider value={NAV_THEME[colorScheme]}>
 				<AuthContext.Provider value={{ user, setUser }}>
-					<Stack screenOptions={{ animation: "slide_from_right" }}>
+					<Stack screenOptions={{ animation: "simple_push" }}>
 						<Stack.Screen
 							name="index"
+							options={{
+								headerShown: false,
+							}}
+						/>
+						<Stack.Screen
+							name="login"
 							options={{
 								headerShown: false,
 							}}

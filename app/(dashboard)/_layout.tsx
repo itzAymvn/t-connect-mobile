@@ -32,6 +32,7 @@ export default function DashboardLayout() {
 					title: "Tableau de bord",
 					headerRight: () => (
 						<View className="flex-row items-center gap-2 pr-4">
+							{/* <View className="relative"> */}
 							<Icon
 								namingScheme="sfSymbol"
 								name="bell"
@@ -42,6 +43,10 @@ export default function DashboardLayout() {
 										: COLORS.black
 								}
 							/>
+							{/* <View className="absolute -top-1 -right-1 bg-red-500 rounded-full w-4 h-4 items-center justify-center">
+									<Text className="text-white text-[10px]">2</Text>
+								</View>
+							</View> */}
 							<ThemeToggle />
 							<View className="bg-primary/10 h-8 w-8 rounded-full items-center justify-center">
 								<Text className="text-primary text-sm font-medium">
