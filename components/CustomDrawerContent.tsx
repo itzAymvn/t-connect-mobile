@@ -1,10 +1,10 @@
 import { AuthContext } from "@/contexts/authContext"
 import { ChildContext } from "@/contexts/childContext"
 import { logout } from "@/services/authService"
+import { Child } from "@/types"
 import {
 	DrawerContentComponentProps,
 	DrawerContentScrollView,
-	DrawerItem,
 	DrawerItemList,
 } from "@react-navigation/drawer"
 import { useContext } from "react"
@@ -12,8 +12,7 @@ import { Image, Pressable, View } from "react-native"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
 import { Picker, PickerItem } from "./nativewindui/Picker"
 import { Text } from "./nativewindui/Text"
-import { Icon } from "@roninoss/icons"
-import { Child } from "@/types"
+import { useRouter } from "expo-router"
 
 const DrawerHeader = ({ handleLogout }: { handleLogout: () => void }) => {
 	return (
@@ -117,10 +116,16 @@ const DrawerFooter = ({
 export const CustomDrawerContent = (props: DrawerContentComponentProps) => {
 	const { setUser } = useContext(AuthContext)
 	const { selectedChild, setSelectedChild } = useContext(ChildContext)
+	const router = useRouter()
 
 	const handleLogout = async () => {
-		await logout()
-		setUser(null)
+		try {
+			await logout()
+			setUser(null)
+			router.navigate("/login")
+		} catch (error) {
+			console.error(error)
+		}
 	}
 
 	return (

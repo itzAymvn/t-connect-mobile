@@ -52,6 +52,8 @@ const Sheet = React.forwardRef<
 	}
 )
 
+Sheet.displayName = "Sheet"
+
 function useSheetRef() {
 	return React.useRef<BottomSheetModal>(null)
 }

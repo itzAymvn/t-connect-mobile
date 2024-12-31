@@ -87,7 +87,7 @@ export default function Emploi() {
 		} finally {
 			setIsWeekLoading(false)
 		}
-	}, [selectedWeekId, fetchEmploi])
+	}, [selectedWeekId, fetchEmploi, bottomSheetModalRef])
 
 	// Initial data fetch
 	useFocusEffect(

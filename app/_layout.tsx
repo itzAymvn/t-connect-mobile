@@ -1,7 +1,7 @@
 import "../global.css"
 
 import { ThemeProvider as NavThemeProvider } from "@react-navigation/native"
-import { Redirect, Stack } from "expo-router"
+import { Stack } from "expo-router"
 import { StatusBar } from "expo-status-bar"
 import { useEffect, useState } from "react"
 import { LogBox } from "react-native"
