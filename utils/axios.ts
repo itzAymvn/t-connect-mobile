@@ -5,7 +5,7 @@ import axios from "axios"
  * Custom axios instance with base configuration and auth token interceptor
  */
 export const axiosInstance = axios.create({
-	baseURL: `${process.env.EXPO_PUBLIC_BASE_URL}/api`,
+	baseURL: `${process.env.EXPO_PUBLIC_BASE_URL}/api/parent`,
 	headers: {
 		"Content-Type": "application/json",
 	},
