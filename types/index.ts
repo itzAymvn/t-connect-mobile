@@ -1,17 +1,17 @@
 export interface User {
-	id: number
+	id: string
 	login: string
 	password: string
 	nom: string
 	prenom: string
-	profil_id: number
-	personnel_id: number | null
-	famille_id: number | null
-	eleve_id: number | null
+	profil_id: string
+	personnel_id: string | null
+	famille_id: string | null
+	eleve_id: string | null
 	actif: boolean
-	user_id: number
-	acces_id: number
-	ecole_id: number
+	user_id: string
+	acces_id: string
+	ecole_id: string
 	flagInsert: boolean
 	flagUpdate: boolean
 	flagDelete: boolean
@@ -19,17 +19,17 @@ export interface User {
 }
 
 export interface Famille {
-	id: number
+	id: string
 	nom: string
 	observations: string
-	tuteur_id: number
-	conjoint_id: number
-	pere_id: number
-	mere_id: number
-	situationFamiliale_id: number
+	tuteur_id: string
+	conjoint_id: string
+	pere_id: string
+	mere_id: string
+	situationFamiliale_id: string
 	typeTuteur: string
-	ecole_id: number
-	user_id: number
+	ecole_id: string
+	user_id: string
 	actif: boolean
 	is_blacklisted: boolean
 	flagInsert: boolean
@@ -38,8 +38,33 @@ export interface Famille {
 	lastUpdate: Date
 }
 
+export interface Child
+	extends Pick<
+		Eleve,
+		"id" | "prenom" | "nom" | "nomlng2" | "prenomlng2" | "datenaissance"
+	> {
+	inscriptions: Array<{
+		id: string
+		dateinscription: Date
+		classe_id: string
+		eleve_id: string
+		affectationniveau_id: string
+		classe: Pick<Classe, "id" | "libelle">
+		affectationniveau: {
+			id: string
+			niveau_id: string
+			niveau: {
+				id: string
+				libelle: string
+				cycle_id: string
+				cycle: Pick<Cycle, "id" | "libelle">
+			}
+		}
+	}>
+}
+
 export interface Eleve {
-	id: number
+	id: string
 	matricule: string
 	prenom: string
 	nom: string
@@ -69,19 +94,19 @@ export interface Eleve {
 	observations: string
 	prenomlng2: string
 	scolarisation: string
-	arriveDe_id: number | null
+	arriveDe_id: string | null
 	tel: string
 	vacccination: boolean
-	cessationtype_id: number | null
+	cessationtype_id: string | null
 	decisionconseil: string
 	remarquecessation: string
 	actif: boolean
-	famille_id: number
-	moisscolaire_id: number
-	sexe_id: number
-	quartier_id: number
-	lieuNaissance_id: number
-	typehandicape_id: number | null
+	famille_id: string
+	moisscolaire_id: string
+	sexe_id: string
+	quartier_id: string
+	lieuNaissance_id: string
+	typehandicape_id: string | null
 	hasAllergieAlimentaire: boolean
 	allergieAlimentaire: string
 	hasIntoleranceAlimentaire: boolean
@@ -100,9 +125,9 @@ export interface Eleve {
 	telMaison: string
 	parents: string
 	telParents: string
-	ecole_id: number
+	ecole_id: string
 	responsableLegalTelephone: string
-	user_id: number
+	user_id: string
 	flagInsert: boolean
 	flagUpdate: boolean
 	flagDelete: boolean
@@ -111,22 +136,22 @@ export interface Eleve {
 }
 
 export interface Inscription {
-	id: number
+	id: string
 	dateinscription: Date
 	inscriptionetat: string
 	inscriptionresultat: string
 	numeroinscription: string
 	parrain: string
-	classe_id: number
-	eleve_id: number
-	circuit_id: number | null
-	moisscolaire_id: number
-	affectationniveau_id: number
-	preinscription_id: number | null
+	classe_id: string
+	eleve_id: string
+	circuit_id: string | null
+	moisscolaire_id: string
+	affectationniveau_id: string
+	preinscription_id: string | null
 	dateentree: Date
-	anneescolaire_id: number
-	user_id: number
-	ecole_id: number
+	anneescolaire_id: string
+	user_id: string
+	ecole_id: string
 	flagInsert: boolean
 	flagUpdate: boolean
 	flagDelete: boolean
@@ -134,20 +159,20 @@ export interface Inscription {
 }
 
 export interface Classe {
-	id: number
+	id: string
 	code: string
 	libelle: string
 	libellelng2: string
-	affectationniveau_id: number
-	branche_id: number
+	affectationniveau_id: string
+	branche_id: string
 	couleur: string
 	idMassar: string
 	massarId: string
 	capacite: number
-	anneescolaire_id: number
+	anneescolaire_id: string
 	ordre: number
-	ecole_id: number
-	user_id: number
+	ecole_id: string
+	user_id: string
 	flagInsert: boolean
 	flagUpdate: boolean
 	flagDelete: boolean
@@ -155,15 +180,15 @@ export interface Classe {
 }
 
 export interface Niveau {
-	id: number
+	id: string
 	libelle: string
 	libellelng2: string
 	idMassar: string
-	cycle_id: number
+	cycle_id: string
 	actif: boolean
 	ordre: number
-	ecole_id: number
-	user_id: number
+	ecole_id: string
+	user_id: string
 	flagInsert: boolean
 	flagUpdate: boolean
 	flagDelete: boolean
@@ -171,7 +196,7 @@ export interface Niveau {
 }
 
 export interface Cycle {
-	id: number
+	id: string
 	libelle: string
 	libellelng2: string
 	numeroautorisation: string
@@ -181,8 +206,8 @@ export interface Cycle {
 	seuilReussite: number
 	actif: boolean
 	ordre: number
-	ecole_id: number
-	user_id: number
+	ecole_id: string
+	user_id: string
 	flagInsert: boolean
 	flagUpdate: boolean
 	flagDelete: boolean
@@ -224,4 +249,3 @@ export interface Semaine {
 	flagDelete: number
 	lastUpdate: string
 }
-

@@ -9,17 +9,17 @@ import { EmploiResponse, getEmploi } from "@/services/childService"
 import { BottomSheetView } from "@gorhom/bottom-sheet"
 import { useFocusEffect } from "@react-navigation/native"
 import { Icon } from "@roninoss/icons"
-import { useCallback, useState } from "react"
-import {
-	ActivityIndicator,
-	Pressable,
-	RefreshControl,
-	ScrollView,
-	Text,
-	View,
-} from "react-native"
 import { format } from "date-fns"
 import { fr } from "date-fns/locale"
+import { useCallback, useState } from "react"
+import {
+    ActivityIndicator,
+    Pressable,
+    RefreshControl,
+    ScrollView,
+    Text,
+    View,
+} from "react-native"
 
 // Main Component
 export default function Emploi() {
@@ -57,7 +57,7 @@ export default function Emploi() {
 
 			try {
 				const data = await getEmploi(
-					selectedChild.inscriptions[0]?.id,
+					selectedChild.inscriptions[0].id,
 					weekId
 				)
 				setEmploi(data)
@@ -184,7 +184,7 @@ export default function Emploi() {
 					<View className="flex-row items-center justify-between">
 						<View className="flex-1 mr-4">
 							<Text className="text-2xl font-bold text-gray-900 dark:text-white">
-								{selectedChild?.prenom}
+								EMPLOI DU TEMPS
 							</Text>
 							{selectedSemaine && (
 								<Text className="text-sm text-gray-500 dark:text-gray-400 mt-1">
