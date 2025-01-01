@@ -19,32 +19,28 @@ export interface LoadUserResponse {
 	user: User & {
 		famille: Famille
 	}
-	children: Array<
-		Pick<
-			Eleve,
-			"id" | "prenom" | "nom" | "nomlng2" | "prenomlng2" | "datenaissance"
+	children: (Pick<
+		Eleve,
+		"id" | "prenom" | "nom" | "nomlng2" | "prenomlng2" | "datenaissance"
+	> & {
+		inscriptions: (Pick<
+			Inscription,
+			| "id"
+			| "dateinscription"
+			| "classe_id"
+			| "eleve_id"
+			| "affectationniveau_id"
 		> & {
-			inscriptions: Array<
-				Pick<
-					Inscription,
-					| "id"
-					| "dateinscription"
-					| "classe_id"
-					| "eleve_id"
-					| "affectationniveau_id"
-				> & {
-					classe: Pick<Classe, "id" | "libelle">
-					affectationniveau: {
-						id: string
-						niveau_id: string
-						niveau: Pick<Niveau, "id" | "libelle" | "cycle_id"> & {
-							cycle: Pick<Cycle, "id" | "libelle">
-						}
-					}
+			classe: Pick<Classe, "id" | "libelle">
+			affectationniveau: {
+				id: string
+				niveau_id: string
+				niveau: Pick<Niveau, "id" | "libelle" | "cycle_id"> & {
+					cycle: Pick<Cycle, "id" | "libelle">
 				}
-			>
-		}
-	>
+			}
+		})[]
+	})[]
 }
 
 export const loadUser = async (): Promise<LoadUserResponse | null> => {

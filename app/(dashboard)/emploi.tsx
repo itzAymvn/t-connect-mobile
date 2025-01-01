@@ -11,13 +11,15 @@ import { useFocusEffect } from "@react-navigation/native"
 import { Icon } from "@roninoss/icons"
 import { useCallback, useState } from "react"
 import {
-    ActivityIndicator,
-    Pressable,
-    RefreshControl,
-    ScrollView,
-    Text,
-    View,
+	ActivityIndicator,
+	Pressable,
+	RefreshControl,
+	ScrollView,
+	Text,
+	View,
 } from "react-native"
+import { format } from "date-fns"
+import { fr } from "date-fns/locale"
 
 // Main Component
 export default function Emploi() {
@@ -40,6 +42,14 @@ export default function Emploi() {
 	const bottomSheetModalRef = useSheetRef()
 
 	// Data fetching
+	const findCurrentDay = useCallback((emploiDays: string[]) => {
+		const today = format(new Date(), "EEEE", { locale: fr }).toLowerCase()
+		return (
+			emploiDays.find((day) => day.toLowerCase() === today) ||
+			emploiDays[0]
+		)
+	}, [])
+
 	const fetchEmploi = useCallback(
 		async (weekId?: string) => {
 			if (!selectedChild?.inscriptions[0]?.id) return
@@ -51,9 +61,11 @@ export default function Emploi() {
 					weekId
 				)
 				setEmploi(data)
-				// Select first day by default
+				// Select current day if available, otherwise select first day
 				if (data.emploi && Object.keys(data.emploi).length > 0) {
-					setSelectedDay(Object.keys(data.emploi)[0])
+					const availableDays = Object.keys(data.emploi)
+					const dayToSelect = findCurrentDay(availableDays)
+					setSelectedDay(dayToSelect)
 				}
 			} catch (err) {
 				setError(
@@ -63,7 +75,7 @@ export default function Emploi() {
 				)
 			}
 		},
-		[selectedChild]
+		[selectedChild, findCurrentDay]
 	)
 
 	// Event handlers
