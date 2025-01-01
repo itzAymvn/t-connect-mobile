@@ -52,151 +52,69 @@ const androidRootVariants = cva("overflow-hidden", {
 	},
 })
 
-const buttonTextVariants = cva("font-medium", {
-	variants: {
-		variant: {
-			primary: "text-white",
-			secondary: "ios:text-primary text-foreground",
-			tonal: "ios:text-primary text-foreground",
-			plain: "text-foreground",
-		},
-		size: {
-			none: "",
-			icon: "",
-			sm: "text-[15px] leading-5",
-			md: "text-[17px] leading-7",
-			lg: "text-[17px] leading-7",
-		},
-	},
-	defaultVariants: {
-		variant: "primary",
-		size: "md",
-	},
-})
-
-function convertToRGBA(rgb: string, opacity: number): string {
-	const rgbValues = rgb.match(/\d+/g)
-	if (!rgbValues || rgbValues.length !== 3) {
-		throw new Error("Invalid RGB color format")
-	}
-	const red = parseInt(rgbValues[0], 10)
-	const green = parseInt(rgbValues[1], 10)
-	const blue = parseInt(rgbValues[2], 10)
-	if (opacity < 0 || opacity > 1) {
-		throw new Error("Opacity must be a number between 0 and 1")
-	}
-	return `rgba(${red},${green},${blue},${opacity})`
+interface ButtonProps
+	extends Omit<PressableProps, "disabled">,
+		VariantProps<typeof buttonVariants> {
+	asChild?: boolean
+	disabled?: boolean
+	textClass?: string
+	className?: string
+	style?: ViewStyle
 }
 
-const ANDROID_RIPPLE = {
-	dark: {
-		primary: {
-			color: convertToRGBA(COLORS.dark.grey3, 0.4),
-			borderless: false,
-		},
-		secondary: {
-			color: convertToRGBA(COLORS.dark.grey5, 0.8),
-			borderless: false,
-		},
-		plain: {
-			color: convertToRGBA(COLORS.dark.grey5, 0.8),
-			borderless: false,
-		},
-		tonal: {
-			color: convertToRGBA(COLORS.dark.grey5, 0.8),
-			borderless: false,
-		},
-	},
-	light: {
-		primary: {
-			color: convertToRGBA(COLORS.light.grey4, 0.4),
-			borderless: false,
-		},
-		secondary: {
-			color: convertToRGBA(COLORS.light.grey5, 0.4),
-			borderless: false,
-		},
-		plain: {
-			color: convertToRGBA(COLORS.light.grey5, 0.4),
-			borderless: false,
-		},
-		tonal: {
-			color: convertToRGBA(COLORS.light.grey6, 0.4),
-			borderless: false,
-		},
-	},
-}
+const Button = React.memo(
+	React.forwardRef<View, ButtonProps>(
+		(
+			{
+				children,
+				asChild,
+				variant,
+				size,
+				className,
+				textClass,
+				disabled,
+				style,
+				...props
+			},
+			ref
+		) => {
+			const { colors } = useColorScheme()
+			const Component = asChild ? Slot.Pressable : Pressable
+			const isAndroid = Platform.OS === "android"
 
-// Add as class when possible: https://github.com/marklawlor/nativewind/issues/522
-const BORDER_CURVE: ViewStyle = {
-	borderCurve: "continuous",
-}
+			const buttonClass = React.useMemo(
+				() => buttonVariants({ variant, size, className }),
+				[variant, size, className]
+			)
 
-type ButtonVariantProps = Omit<
-	VariantProps<typeof buttonVariants>,
-	"variant"
-> & {
-	variant?: Exclude<VariantProps<typeof buttonVariants>["variant"], null>
-}
+			const androidRootClass = React.useMemo(
+				() => (isAndroid ? androidRootVariants({ size }) : ""),
+				[isAndroid, size]
+			)
 
-type AndroidOnlyButtonProps = {
-	/**
-	 * ANDROID ONLY: The class name of root responsible for hidding the ripple overflow.
-	 */
-	androidRootClassName?: string
-}
-
-type ButtonProps = PressableProps & ButtonVariantProps & AndroidOnlyButtonProps
-
-const Root = Platform.OS === "android" ? View : Slot.Pressable
-
-const Button = React.forwardRef<
-	React.ElementRef<typeof Pressable>,
-	ButtonProps
->(
-	(
-		{
-			className,
-			variant = "primary",
-			size,
-			style = BORDER_CURVE,
-			androidRootClassName,
-			...props
-		},
-		ref
-	) => {
-		const { colorScheme } = useColorScheme()
-
-		return (
-			<TextClassContext.Provider
-				value={buttonTextVariants({ variant, size })}
-			>
-				<Root
-					className={Platform.select({
-						ios: undefined,
-						default: androidRootVariants({
-							size,
-							className: androidRootClassName,
-						}),
-					})}
+			return (
+				<View
+					ref={ref}
+					className={cn(androidRootClass, disabled && "opacity-40")}
+					style={style}
 				>
-					<Pressable
-						className={cn(
-							props.disabled && "opacity-50",
-							buttonVariants({ variant, size, className })
-						)}
-						ref={ref}
-						style={style}
-						android_ripple={ANDROID_RIPPLE[colorScheme][variant]}
+					<Component
+						className={buttonClass}
+						disabled={disabled}
 						{...props}
-					/>
-				</Root>
-			</TextClassContext.Provider>
-		)
-	}
+					>
+						<TextClassContext.Provider
+							value={{ className: textClass }}
+						>
+							{children}
+						</TextClassContext.Provider>
+					</Component>
+				</View>
+			)
+		}
+	)
 )
 
 Button.displayName = "Button"
 
-export { Button, buttonTextVariants, buttonVariants }
-export type { ButtonProps }
+export { Button, type ButtonProps }

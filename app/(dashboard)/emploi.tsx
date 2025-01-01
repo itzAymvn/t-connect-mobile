@@ -11,14 +11,14 @@ import { useFocusEffect } from "@react-navigation/native"
 import { Icon } from "@roninoss/icons"
 import { format } from "date-fns"
 import { fr } from "date-fns/locale"
-import { useCallback, useState } from "react"
+import { useCallback, useMemo, useState } from "react"
 import {
-    ActivityIndicator,
-    Pressable,
-    RefreshControl,
-    ScrollView,
-    Text,
-    View,
+	ActivityIndicator,
+	Pressable,
+	RefreshControl,
+	ScrollView,
+	Text,
+	View,
 } from "react-native"
 
 // Main Component
@@ -41,6 +41,12 @@ export default function Emploi() {
 	// Refs
 	const bottomSheetModalRef = useSheetRef()
 
+	// Memoized values
+	const selectedSemaine = useMemo(
+		() => emploi?.semaines.find((s) => s.id === emploi.selected_semaine),
+		[emploi?.semaines, emploi?.selected_semaine]
+	)
+
 	// Data fetching
 	const findCurrentDay = useCallback((emploiDays: string[]) => {
 		const today = format(new Date(), "EEEE", { locale: fr }).toLowerCase()
@@ -61,7 +67,6 @@ export default function Emploi() {
 					weekId
 				)
 				setEmploi(data)
-				// Select current day if available, otherwise select first day
 				if (data.emploi && Object.keys(data.emploi).length > 0) {
 					const availableDays = Object.keys(data.emploi)
 					const dayToSelect = findCurrentDay(availableDays)
@@ -109,40 +114,9 @@ export default function Emploi() {
 		}, [fetchEmploi])
 	)
 
-	// Loading and error states
-	if (isLoading) {
-		return (
-			<View className="flex-1 items-center justify-center">
-				<ActivityIndicator size="large" color="#111827" />
-			</View>
-		)
-	}
-
-	if (error) {
-		return (
-			<View className="flex-1 items-center justify-center p-4">
-				<Text className="text-red-500 text-center">{error}</Text>
-			</View>
-		)
-	}
-
-	if (!emploi) {
-		return (
-			<View className="flex-1 items-center justify-center p-4">
-				<Text className="text-center text-gray-600 dark:text-gray-400">
-					Aucun emploi du temps disponible
-				</Text>
-			</View>
-		)
-	}
-
-	const selectedSemaine = emploi.semaines.find(
-		(s) => s.id === emploi.selected_semaine
-	)
-
-	// Helper function to render schedule content
-	const renderScheduleContent = () => {
-		if (!selectedDay) return null
+	// Memoized schedule content
+	const scheduleContent = useMemo(() => {
+		if (!selectedDay || !emploi?.emploi) return null
 
 		const isHoliday = emploi.emploi[selectedDay].some(
 			(seance) => seance.jour_ferie_id
@@ -174,6 +148,33 @@ export default function Emploi() {
 					seance={seance}
 				/>
 			))
+	}, [selectedDay, emploi?.emploi])
+
+	// Loading and error states
+	if (isLoading) {
+		return (
+			<View className="flex-1 items-center justify-center">
+				<ActivityIndicator size="large" color="#111827" />
+			</View>
+		)
+	}
+
+	if (error) {
+		return (
+			<View className="flex-1 items-center justify-center p-4">
+				<Text className="text-red-500 text-center">{error}</Text>
+			</View>
+		)
+	}
+
+	if (!emploi) {
+		return (
+			<View className="flex-1 items-center justify-center p-4">
+				<Text className="text-center text-gray-600 dark:text-gray-400">
+					Aucun emploi du temps disponible
+				</Text>
+			</View>
+		)
 	}
 
 	return (
@@ -234,7 +235,7 @@ export default function Emploi() {
 						/>
 					}
 				>
-					{renderScheduleContent()}
+					{scheduleContent}
 				</ScrollView>
 			</View>
 
